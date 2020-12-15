@@ -48,7 +48,7 @@ rawDict = ReadOutToDict("C:/CodeStuff/VisualizingTwitchCommunities/TwitchData.cs
 dict = CreateOverlapDict(rawDict)
 
 def GenerateGephiData(dict):
-    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/920Data.csv", 'w') as csvfile:
+    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayData.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
         #writer.writeheader()
         writer.writerow(["Source", "Target", "Weight"])
@@ -62,7 +62,7 @@ def GenerateGephiData(dict):
 def GenerateGephiLabels(rawDict):
     print("Generating Labels...")
     sys.stdout.flush()
-    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/920Labels.csv", 'w') as csvfile:
+    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayLabels.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["ID", "Label", "Count"])
         for key, value in rawDict.items():
