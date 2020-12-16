@@ -1,2 +1,4 @@
 # VisualizingTwitchCommunities
-Produces visually intuitive network graphs of viewership communities on Twitch.tv
+Visualizing communities on Twitch.tv based on viewership overlap
+
+![](OutputImages/FruchtermanFinals/FruchtermanHighRes.png)
