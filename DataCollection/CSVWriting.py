@@ -1,7 +1,6 @@
 import csv
 import sys
 import pandas as pd
-import GetTwitchData
 
 
 #Moves each column of dataframe up so that all NaN values sit at the bottom of the dataframe
@@ -63,7 +62,7 @@ def UpdateTwitchData(dict1):
     #Read the csv into a dictionary and remove NaN values from it
     print("Reading Dictionary from CSV...")
     sys.stdout.flush()
-    readDF = pd.read_csv('C:/CodeStuff/VisualizingTwitchCommunities/TwitchData.csv')
+    readDF = pd.read_csv('TwitchData.csv')
     dict2 = readDF.to_dict('list')
     dict2 = RemoveNans(dict2)
 
@@ -83,8 +82,4 @@ def UpdateTwitchData(dict1):
 
     #Write dataframe to csv
     print("Writing dictionary to CSV...")
-    dataFrame.to_csv('C:/CodeStuff/VisualizingTwitchCommunities/TwitchData.csv', index = False)
-
-j = GetTwitchData.GetTopStreams() #Get the top 100 streams on Twitch
-d = GetTwitchData.GetDictOfStreamersAndViewers(j) #Create a dictionary of {streamer:[viewers]} from those 100 streams
-UpdateTwitchData(d) #Add that dictionary to the master csv
+    dataFrame.to_csv('TwitchData.csv', index = False)
