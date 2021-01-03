@@ -1,5 +1,5 @@
 # VisualizingTwitchCommunities
-Visualizing communities on Twitch.tv based on viewership overlap
+This project maps communities of streamers on Twitch.tv based on shared viewership. The data is collected from the Twitch API and visualized in Gephi.
 
 ## Results
 [![Twitch-Communities-High-Res.png](https://i.postimg.cc/RZZmd0kD/Twitch-Communities-High-Res.png)](https://postimg.cc/2VMg8C8Q)
