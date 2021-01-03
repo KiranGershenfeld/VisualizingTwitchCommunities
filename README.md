@@ -5,6 +5,7 @@ This project maps communities of streamers on Twitch.tv based on shared viewersh
 [![Twitch-Communities-High-Res.png](https://i.postimg.cc/RZZmd0kD/Twitch-Communities-High-Res.png)](https://postimg.cc/2VMg8C8Q)
 
 [I wrote an article on TowardsDataScience here](https://towardsdatascience.com/insights-from-visualizing-public-data-on-twitch-a73304a1b3eb)
+
 If your curious about how to read this graph and why I made it, check out the article.
 
 ## How can I mess with the graph?
