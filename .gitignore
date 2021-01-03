@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # CSVs
-*.csv
+*TwitchData.csv
 
 #Credentials
 *Credentials.py
