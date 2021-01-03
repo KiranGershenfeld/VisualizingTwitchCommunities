@@ -1,7 +1,7 @@
 import csv
 import sys
 import pandas as pd
-
+import os
 
 #Moves each column of dataframe up so that all NaN values sit at the bottom of the dataframe
 def ShiftColumnsUp(df):
@@ -62,15 +62,17 @@ def UpdateTwitchData(dict1):
     #Read the csv into a dictionary and remove NaN values from it
     print("Reading Dictionary from CSV...")
     sys.stdout.flush()
-    readDF = pd.read_csv('TwitchData.csv')
-    dict2 = readDF.to_dict('list')
-    dict2 = RemoveNans(dict2)
+    try:
+        readDF = pd.read_csv('DataCollection/TwitchData.csv')
+        dict2 = readDF.to_dict('list')
+        dict2 = RemoveNans(dict2)
 
-    #Combine new dictionary to the one just read from the csv
-    print("Combining Dictionaries...")
-    sys.stdout.flush()
-    dict3 = CombineDictionaries(dict1, dict2)
-
+        #Combine new dictionary to the one just read from the csv
+        print("Combining Dictionaries...")
+        sys.stdout.flush()
+        dict3 = CombineDictionaries(dict1, dict2)
+    except:
+        dict3 = dict1
     #Make dict into suitable dataframe by adding NaN values so each colunn is of matching length
     print("Processing dictionary to be written...")
     sys.stdout.flush()
@@ -82,4 +84,4 @@ def UpdateTwitchData(dict1):
 
     #Write dataframe to csv
     print("Writing dictionary to CSV...")
-    dataFrame.to_csv('TwitchData.csv', index = False)
+    dataFrame.to_csv('DataCollection/TwitchData.csv', index = False)

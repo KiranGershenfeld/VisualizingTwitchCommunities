@@ -1,13 +1,16 @@
 import GetTwitchData
 import CSVWriting
+import Credentials as cr
+import os
+
+#Replace cr.path with the path to the VisualizingTwitchCommunities folder as a string (ex. 'C:/VisualizingTwitchCommunities')
+os.chdir(cr.path)
 
 
 def main():
-    j = GetTwitchData.GetTopStreams() #Get the top 100 streams on Twitch
-    d = GetTwitchData.GetDictOfStreamersAndViewers(j) #Create a dictionary of {streamer:[viewers]} from those 100 streams
-    CSVWriting.UpdateTwitchData(d) #Add that dictionary to the master csv
-
-
+    json = GetTwitchData.GetTopStreams(100) #Get the top 100 streams on Twitch
+    dict = GetTwitchData.GetDictOfStreamersAndViewers(json) #Create a dictionary of {streamer:[viewers]} from those 100 streams
+    CSVWriting.UpdateTwitchData(dict) #Add that dictionary to the master csv
 
 
 #Program Execution

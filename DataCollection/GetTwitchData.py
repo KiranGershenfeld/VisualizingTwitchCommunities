@@ -6,7 +6,8 @@ import Credentials as cr
 
 #Any instance of sys.stdout.flush() is just to force python to print at the right times so I can keep track of whats happening
 
-def GetTopStreams():
+#Gets the numberOfStreams top streams currently live on twitch. numberOfStreams max is 100
+def GetTopStreams(numberOfStreams):
     print("Getting a list of top live streams...")
     #Change python encoding to UTF-8 because for some reason it doesnt do that by default
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
@@ -15,7 +16,7 @@ def GetTopStreams():
     Headers = {'Client-ID': cr.clientID, 'Authorization': "Bearer " + cr.clientSecret}
 
     #Request top 100 viewed streams on twitch
-    r = requests.get('https://api.twitch.tv/helix/streams?first=100', headers=Headers)
+    r = requests.get('https://api.twitch.tv/helix/streams?first=' + str(numberOfStreams), headers=Headers)
     raw = r.text.encode('utf-8')
     j = json.loads(raw)
     return j
@@ -31,7 +32,7 @@ def getCurrentViewersForChannel(channel):
     else:
         return None #If the query couldnt be completed return None (This occurs with foreign characters)
 
-#This method combines the streamers and viewer list into a large dictionary of {streamer: [viewers]}
+#This method looks up the viewers of each streamer in j and creates a large dictionary of {streamer: [viewers]}
 def GetDictOfStreamersAndViewers(j):
     print("Creating dictionary of streamers and viewers...")
     sys.stdout.flush()
