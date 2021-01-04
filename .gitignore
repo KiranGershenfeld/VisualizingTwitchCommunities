@@ -9,6 +9,9 @@ __pycache__/
 # CSVs
 *.csv
 
+#Pickles
+*.pkl
+
 #Credentials
 *Credentials.py
 
