@@ -1,26 +1,8 @@
 import csv
 import sys
-import pandas as pd
 import os
 import pickle
-
-#Moves each column of dataframe up so that all NaN values sit at the bottom of the dataframe
-def ShiftColumnsUp(df):
-    return df.apply(lambda x: pd.Series(x.dropna().values))
-
-#Storing the dataframe into a csv forces a bunch of NaN values so each column is equal length.
-#This function drastically reduces processing times by getting rid of NaN values in the dictionary
-def RemoveNans(dict):
-    length = len(dict.items())
-    newDict = {}
-    print("removing nan values from " + str(length) + " entries")
-    count = 0
-    for key, value in dict.items():
-        print(str(count) + "/" + str(length)) #Count printing to keep track of what is happening at run time
-        sys.stdout.flush()
-        newDict[key] = [x for x in value if str(x) != 'nan'] #Removes NaN values from list
-        count+= 1
-    return newDict
+import google.cloud.storage
 
 #Combines two dictionaries
 #matching keys will have their value lists merged without duplicate values
@@ -73,8 +55,8 @@ def savePickle(name, data):
 #This method takes in a dictionary of data from twitch, combines it with the currently saved data, and writes that into a file
 def UpdatePickleWithData(dict1):
     try:
-        dict2 = loadPickle('DataCollection/TwitchData')
+        dict2 = loadPickle('TwitchData')
         dict = CombineDictionaries(dict1, dict2, True) #Combines the dictionaries so each key appears once, True allows duplicate viewers
     except:
         dict = dict1
-    savePickle('DataCollection/TwitchData', dict)
+    savePickle('TwitchData', dict)

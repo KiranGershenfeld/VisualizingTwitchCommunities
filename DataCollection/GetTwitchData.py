@@ -18,19 +18,17 @@ def GetTopStreams(numberOfStreams):
     #Request top 100 viewed streams on twitch
     r = requests.get('https://api.twitch.tv/helix/streams?first=' + str(numberOfStreams), headers=Headers)
     raw = r.text.encode('utf-8')
-    j = json.loads(raw)
+    j = json.loads(raw.decode('utf-8'))
     return j
 
 #This method looks up the viewers of each streamer in j and creates a large dictionary of {streamer: [viewers]}
 def GetDictOfStreamersAndViewers(j):
     print("Creating dictionary of streamers and viewers...")
-    sys.stdout.flush()
     dict = {}
     for element in j['data']: #This iterates through each of the top 100 streams
 
         streamer = element['user_name'] #This is the streamers display name
         print("getting viewers for " + streamer)
-        sys.stdout.flush()
 
         #Requests to tmi.twitch for the viewers in each stream
         r = requests.get('http://tmi.twitch.tv/group/user/'+ streamer.lower() +'/chatters').json()
@@ -40,6 +38,7 @@ def GetDictOfStreamersAndViewers(j):
             loginNameRequest = requests.get('https://api.twitch.tv/helix/users?id=' + element['user_id'], headers=Headers).json()
             loginName = loginNameRequest['data'][0]['login']
             r = requests.get('http://tmi.twitch.tv/group/user/'+ loginName.lower() +'/chatters').json()
+            streamer = loginName
 
         #viewerlist consists of the streamers vips, mods, and chatters
         viewers = r['chatters']['vips'] + r['chatters']['moderators'] + r['chatters']['viewers'] #List consists of users in chat tagged as viewer or VIP

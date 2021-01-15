@@ -1,7 +1,14 @@
 import sys
 import csv
 import pandas as pd
+import pickle
+import Credentials as cr
+import os
+import io
+from datetime import datetime
 
+os.chdir(cr.path)
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 #This function removes NaN values from a dictionary
 def RemoveNans(dict):
     length = len(dict.items())
@@ -23,6 +30,10 @@ def ReadOutToDict(csvFile):
     dict = df.to_dict('list')
     dict = RemoveNans(dict)
     return dict
+
+def loadPickle(name):
+    with open(name + '.pkl', 'rb') as f:
+        return pickle.load(f)
 
 #This is the main analysis function for the data.
 #It creates a dictionary of the form {streamer1: {streamer2: overlap, streamer3: overlap}}
@@ -49,12 +60,15 @@ def CreateOverlapDict(dict):
         count+=1
     return viewerOverlapDict
 
-rawDict = ReadOutToDict("C:/CodeStuff/VisualizingTwitchCommunities/TwitchData.csv") #Read the data from csv
+rawDict = loadPickle("DataCollection/TwitchData")
 dict = CreateOverlapDict(rawDict) #Process data creating dictionary of {streamer1: {streamer2: overlap, streamer3: overlap}}
+now = datetime.now()
+date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
 #Generates a new csv file for the edge list on Gephi
 def GenerateGephiData(dict):
-    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayData.csv", 'w') as csvfile:
+    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SEDGELIST"))
+    with open(fileString, 'w') as csvfile:
         writer = csv.writer(csvfile)
         #writer.writeheader()
         writer.writerow(["Source", "Target", "Weight"]) #These column headers are used in Gephi automatically
@@ -67,9 +81,10 @@ def GenerateGephiData(dict):
 
 #Generates a new csv file for the node list labels on Gephi
 def GenerateGephiLabels(rawDict):
+    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SLABELS"))
     print("Generating Labels...")
     sys.stdout.flush()
-    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayLabels.csv", 'w') as csvfile:
+    with open(fileString, 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["ID", "Label", "Count"]) #These columns are used in Gephi automatically
         for key, value in rawDict.items():
