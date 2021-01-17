@@ -60,7 +60,7 @@ def CreateOverlapDict(dict):
         count+=1
     return viewerOverlapDict
 
-rawDict = loadPickle("DataCollection/TwitchData")
+rawDict = loadPickle("Visualization/TwitchData")
 dict = CreateOverlapDict(rawDict) #Process data creating dictionary of {streamer1: {streamer2: overlap, streamer3: overlap}}
 now = datetime.now()
 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
