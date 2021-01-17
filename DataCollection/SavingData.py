@@ -2,7 +2,7 @@ import csv
 import sys
 import os
 import pickle
-import google.cloud.storage
+from google.cloud import storage
 
 #Combines two dictionaries
 #matching keys will have their value lists merged without duplicate values
@@ -12,31 +12,25 @@ def CombineDictionaries(dict1, dict2, repeatsAllowed):
     set1 = set(dict1)
     set2 = set(dict2)
     print("Creating list for keys in both dictionaries...")
-    sys.stdout.flush()
     print("There are " + str(len(set1 & set2)) + " keys shared")
 
     #For each key in both dictionaries
     for key in set1 & set2:
         print("finding viewer union for " + key + "...")
-        sys.stdout.flush()
         print("extending list")
-        sys.stdout.flush()
         list1 = dict1[key]
         list2 = dict2[key]
         list1.extend(list2) #Add the lists together
-        sys.stdout.flush()
         if(repeatsAllowed):
             dict3[key] = list1
         else:
             dict3[key] = list(set(list1))  #Remove duplicates in the list
 
     print("Adding dict1 only values...")
-    sys.stdout.flush()
     for key in set1 - set2: #Add key value pairs in just dict1
         dict3[key] = dict1[key]
 
     print("Adding dict2 only values...")
-    sys.stdout.flush()
     for key in set2 - set1: #Add key value pairs in just dict 2
         dict3[key] = dict2[key]
 
@@ -44,19 +38,32 @@ def CombineDictionaries(dict1, dict2, repeatsAllowed):
 
 #Load a pickle file with specified name
 def loadPickle(name):
-    with open(name + '.pkl', 'rb') as f:
-        return pickle.load(f)
+
+    client = storage.Client()
+
+    bucket = client.get_bucket('visualizingtwitchcommunities.appspot.com')
+    blob = bucket.blob(name)
+    content = blob.download_as_string()
+    return pickle.loads(content)
 
 #Save a pickle file with specified data and name
 def savePickle(name, data):
-    with open(name + '.pkl', 'wb') as f:
-        return pickle.dump(data, f, 0)
+    client = storage.Client()
+
+    bucket = client.get_bucket('visualizingtwitchcommunities.appspot.com')
+    blob = bucket.blob(name)
+    pickle_out = pickle.dumps(data)
+    blob.upload_from_string(pickle_out)
+
 
 #This method takes in a dictionary of data from twitch, combines it with the currently saved data, and writes that into a file
 def UpdatePickleWithData(dict1):
+    print("Saving Data...")
     try:
-        dict2 = loadPickle('TwitchData')
+        dict2 = loadPickle('TwitchData.pkl')
         dict = CombineDictionaries(dict1, dict2, True) #Combines the dictionaries so each key appears once, True allows duplicate viewers
+        print("Dictionaries Combined")
     except:
         dict = dict1
-    savePickle('TwitchData', dict)
+    
+    savePickle('TwitchData.pkl', dict)
