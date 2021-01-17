@@ -67,7 +67,7 @@ date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
 #Generates a new csv file for the edge list on Gephi
 def GenerateGephiData(dict):
-    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SEDGELIST"))
+    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SEDGELIST.csv"))
     with open(fileString, 'w') as csvfile:
         writer = csv.writer(csvfile)
         #writer.writeheader()
@@ -81,7 +81,7 @@ def GenerateGephiData(dict):
 
 #Generates a new csv file for the node list labels on Gephi
 def GenerateGephiLabels(rawDict):
-    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SLABELS"))
+    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SLABELS.csv"))
     print("Generating Labels...")
     sys.stdout.flush()
     with open(fileString, 'w') as csvfile:
