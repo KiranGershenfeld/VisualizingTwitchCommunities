@@ -31,7 +31,10 @@ def GetDictOfStreamersAndViewers(j):
         print("getting viewers for " + streamer)
 
         #Requests to tmi.twitch for the viewers in each stream
-        r = requests.get('http://tmi.twitch.tv/group/user/'+ streamer.lower() +'/chatters').json()
+        try:
+            r = requests.get('http://tmi.twitch.tv/group/user/'+ streamer.lower() +'/chatters').json()
+        except json.decoder.JSONDecodeError:
+            r = ""
 
         #If the stream was not found (this happens in the case of asian characters in name), make an extra api call to get the accounts login name which can then be queried for the same viewer list
         if(r == ""):
