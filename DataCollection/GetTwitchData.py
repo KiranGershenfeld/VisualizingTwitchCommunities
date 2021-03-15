@@ -36,12 +36,8 @@ def get_current_viewers(channel):
 def get_viewers(j):
     print("Creating dictionary of streamers and viewers...")
     data = {}
-    # Get just the list of streamers
-    streamers = [element['user_login'] for element in j['data']]
-    for streamer in streamers:
-        # Get viewers for a particular streamer
-        viewers = get_current_viewers(streamer.lower())
-        # Add streamer to dictionary with list of viewers as value
-        if viewers is not None:
+    for element in j['data']:
+        streamer = element['user_login']
+        if viewers := get_current_viewers(streamer):
             data[streamer] = viewers
     return data

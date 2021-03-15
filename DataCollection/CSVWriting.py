@@ -31,27 +31,24 @@ def combine_dicts(dict1, dict2):
     dict3 = {}
 
     print("Creating list for keys in both dictionaries...")
-    print(f"There are {len(set(dict1) & set(dict2))} keys shared")
+
+    set1 = set(dict1)
+    set2 = set(dict2)
+    shared = set1.intersection(set2)
+
+    print(f"There are {len(shared)} keys shared")
 
     # For each key in both dictionaries
-    for key in set(dict1) & set(dict2):
+    for key in shared:
         print(f"finding viewer union for {key}...")
-        print("extending list")
-        list1 = dict1[key]
-        list2 = dict2[key]
-        # Add the lists together
-        list1.extend(list2)
-        # Remove duplicates in the list
-        dict3[key] = list(set(list1))
+        dict3[key] = list(set(dict1[key]).union(set(dict2[key])))
 
     print("Adding dict1 only values...")
-    # Add key value pairs in just dict1
-    for key in set(dict1) - set(dict2):
+    for key in set1 - set2:
         dict3[key] = dict1[key]
 
     print("Adding dict2 only values...")
-    # Add key value pairs in just dict 2
-    for key in set(dict2) - set(dict1):
+    for key in set2 - set1:
         dict3[key] = dict2[key]
 
     return dict3
@@ -64,7 +61,7 @@ def update_twitch_data(dict1):
     # Read the csv into a dictionary and remove NaN values from it
     print("Reading Dictionary from CSV...")
     try:
-        read_df = pd.read_csv('DataCollection/TwitchData.csv')
+        read_df = pd.read_csv('../DataCollection/TwitchData.csv')
         dict2 = read_df.to_dict('list')
         dict2 = remove_nans(dict2)
 
@@ -86,4 +83,4 @@ def update_twitch_data(dict1):
 
     # Write dataframe to csv
     print("Writing dictionary to CSV...")
-    df.to_csv('DataCollection/TwitchData.csv', index=False)
+    df.to_csv('../DataCollection/TwitchData.csv', index=False)

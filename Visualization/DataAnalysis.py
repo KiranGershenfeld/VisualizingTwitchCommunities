@@ -72,7 +72,7 @@ def compute_streamer_overlaps(data):
 
 # Generates a new csv file for the edge list on Gephi
 def generate_gephi_data(data):
-    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayData.csv", 'w') as csvfile:
+    with open("../5DayData.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
 
         # These column headers are used in Gephi automatically
@@ -90,7 +90,7 @@ def generate_gephi_data(data):
 # Generates a new csv file for the node list labels on Gephi
 def generate_gephi_labels(raw_dict):
     print("Generating Labels...")
-    with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayLabels.csv", 'w') as csvfile:
+    with open("../5DayLabels.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
         # These columns are used in Gephi automatically
         writer.writerow(["ID", "Label", "Count"])
@@ -101,7 +101,7 @@ def generate_gephi_labels(raw_dict):
 
 def main():
     # Read the data from csv
-    raw_dict = read_data("C:/CodeStuff/VisualizingTwitchCommunities/TwitchData.csv")
+    raw_dict = read_data("../TwitchData.csv")
     # Process data creating dictionary of {streamer1: {streamer2: overlap, streamer3: overlap}}
     data = compute_streamer_overlaps(raw_dict)
     # Generate Gephi data files with the dictionaries
