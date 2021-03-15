@@ -1,5 +1,5 @@
 import csv
-from math import isnan
+from pandas import isna
 
 import pandas as pd
 
@@ -13,7 +13,7 @@ def remove_nans(data):
     for key, value in data.items():
         # Printing count so I can keep track of progress
         print(f"{count}/{length}")
-        new_dict[key] = [x for x in value if not isnan(x)]
+        new_dict[key] = [x for x in value if not isna(x)]
         count += 1
     return new_dict
 
@@ -101,7 +101,7 @@ def generate_gephi_labels(raw_dict):
 
 def main():
     # Read the data from csv
-    raw_dict = read_data("../TwitchData.csv")
+    raw_dict = read_data("../DataCollection/TwitchData.csv")
     # Process data creating dictionary of {streamer1: {streamer2: overlap, streamer3: overlap}}
     data = compute_streamer_overlaps(raw_dict)
     # Generate Gephi data files with the dictionaries

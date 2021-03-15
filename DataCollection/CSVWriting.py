@@ -1,5 +1,5 @@
 import pandas as pd
-from math import isnan
+from pandas import isna
 
 
 # Moves each column of dataframe up so that all NaN values sit at the bottom of the dataframe
@@ -18,7 +18,7 @@ def remove_nans(data):
         # Count printing to keep track of what is happening at run time
         print(f"{count}/{length}")
         # Removes NaN values from list
-        new_dict[key] = [x for x in value if not isnan(x)]
+        new_dict[key] = [x for x in value if not isna(x)]
         count += 1
 
     return new_dict
