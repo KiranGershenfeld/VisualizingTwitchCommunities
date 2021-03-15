@@ -12,11 +12,13 @@ def shift_columns_up(df):
 def remove_nans(data):
     length = len(data.items())
     new_dict = {}
-    print("removing nan values from " + str(length) + " entries")
+    print(f"removing nan values from {length} entries")
     count = 0
     for key, value in data.items():
-        print(str(count) + "/" + str(length))  # Count printing to keep track of what is happening at run time
-        new_dict[key] = [x for x in value if not isnan(x)]  # Removes NaN values from list
+        # Count printing to keep track of what is happening at run time
+        print(f"{count}/{length}")
+        # Removes NaN values from list
+        new_dict[key] = [x for x in value if not isnan(x)]
         count += 1
 
     return new_dict
@@ -29,23 +31,27 @@ def combine_dicts(dict1, dict2):
     dict3 = {}
 
     print("Creating list for keys in both dictionaries...")
-    print("There are " + str(len(set(dict1) & set(dict2))) + " keys shared")
+    print(f"There are {len(set(dict1) & set(dict2))} keys shared")
 
     # For each key in both dictionaries
     for key in set(dict1) & set(dict2):
-        print("finding viewer union for " + key + "...")
+        print(f"finding viewer union for {key}...")
         print("extending list")
         list1 = dict1[key]
         list2 = dict2[key]
-        list1.extend(list2)  # Add the lists together
-        dict3[key] = list(set(list1))  # Remove duplicates in the list
+        # Add the lists together
+        list1.extend(list2)
+        # Remove duplicates in the list
+        dict3[key] = list(set(list1))
 
     print("Adding dict1 only values...")
-    for key in set(dict1) - set(dict2):  # Add key value pairs in just dict1
+    # Add key value pairs in just dict1
+    for key in set(dict1) - set(dict2):
         dict3[key] = dict1[key]
 
     print("Adding dict2 only values...")
-    for key in set(dict2) - set(dict1):  # Add key value pairs in just dict 2
+    # Add key value pairs in just dict 2
+    for key in set(dict2) - set(dict1):
         dict3[key] = dict2[key]
 
     return dict3

@@ -8,10 +8,11 @@ import pandas as pd
 def remove_nans(data):
     length = len(data.items())
     new_dict = {}
-    print("removing nan values from " + str(length) + " entries")
+    print(f"removing nan values from {length} entries")
     count = 0
     for key, value in data.items():
-        print(str(count) + "/" + str(length))  # Printing count so I can keep track of progress
+        # Printing count so I can keep track of progress
+        print(f"{count}/{length}")
         new_dict[key] = [x for x in value if not isnan(x)]
         count += 1
     return new_dict
@@ -32,14 +33,21 @@ def read_data(csv_file):
 def compute_streamer_overlaps(data):
     overlap = {}
     count = 1
-    completed_streamers = []  # Save which streamers have been processed to avoid repeating
+
+    # Save which streamers have been processed to avoid repeating
+    completed_streamers = []
+
+    # Make viewer list a set to dramatically decrease comparison time
     for key in data:
-        data[key] = set(data[key])  # Make viewer list a set to dramatically decrease comparison time
+        data[key] = set(data[key])
+
     for key in data:
         temp_list = {}
 
         total_length = len(data.keys())
-        print(str(count) + "/" + str(total_length))  # Print progress so I can keep track
+
+        # Print progress so I can keep track
+        print(f"{count}/{total_length}")
 
         # Loop through every key again for each key in the dictionary
         for comparisonKey in data:
@@ -50,10 +58,15 @@ def compute_streamer_overlaps(data):
                 # If the size is over 300 add {comparisonStreamer: overlap} to the dictionary
                 if overlap_size > 300:
                     temp_list[comparisonKey] = overlap_size
-        overlap[key] = temp_list  # Add this comparison dictionary to the larger dictionary for that streamer
+
+        # Add this comparison dictionary to the larger dictionary for that streamer
+        overlap[key] = temp_list
+
         # Add the streamer to completed as no comparisons using this streamer need to be done anymore
         completed_streamers.append(key)
+
         count += 1
+
     return overlap
 
 
@@ -61,13 +74,15 @@ def compute_streamer_overlaps(data):
 def generate_gephi_data(data):
     with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayData.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
-        # writer.writeheader()
-        writer.writerow(["Source", "Target", "Weight"])  # These column headers are used in Gephi automatically
+
+        # These column headers are used in Gephi automatically
+        writer.writerow(["Source", "Target", "Weight"])
+
         for key, value in data.items():
             node_a = key
             for node, count in value.items():
                 node_b = node
-                print(node_a + " " + node_b)
+                print(f"{node_a} {node_b}")
                 # node_a is streamer1, node_b is streamer2, and count is their overlapping viewers
                 writer.writerow([node_a, node_b, count])
 
@@ -77,10 +92,11 @@ def generate_gephi_labels(raw_dict):
     print("Generating Labels...")
     with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayLabels.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["ID", "Label", "Count"])  # These columns are used in Gephi automatically
+        # These columns are used in Gephi automatically
+        writer.writerow(["ID", "Label", "Count"])
         for key, value in raw_dict.items():
-            writer.writerow(
-                [key, key, len(value)])  # This data is streamer1, streamer1, and # of unique viewers for streamer1
+            # This data is streamer1, streamer1, and # of unique viewers for streamer1
+            writer.writerow([key, key, len(value)])
 
 
 def main():

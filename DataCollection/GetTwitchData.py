@@ -11,22 +11,20 @@ def get_top_streams(count):
     cr = json.load(open('../credentials.json'))
 
     # Header auth values taken from twitchtokengenerator.com, not sure what to do if they break
-    headers = {'Client-ID': cr['client-id'], 'Authorization': "Bearer " + cr['access-token']}
+    headers = {'Client-ID': cr['client-id'], 'Authorization': f"Bearer {cr['access-token']}"}
 
-    # Request top 100 viewed streams on twitch
-    r = requests.get('https://api.twitch.tv/helix/streams?first=' + str(count), headers=headers)
-    raw = r.text.encode('utf-8')
-    j = json.loads(raw)
-    return j
+    # Request top `count` viewed streams on twitch
+    return requests.get(f'https://api.twitch.tv/helix/streams?first={count}', headers=headers).json()
 
 
 # Get the a list of viewers for a given twitch channel from tmi.twitch (Not an API call)
 def get_current_viewers(channel):
-    print("Getting viewers for " + channel + "...")
-    r = requests.get('http://tmi.twitch.tv/group/user/' + channel.lower() + '/chatters').json()
+    print(f"Getting viewers for {channel}...")
 
-    # If the query couldnt be completed return None (This occurs with foreign characters)
-    if r == "":
+    try:
+        r = requests.get(f'http://tmi.twitch.tv/group/user/{channel.lower()}/chatters').json()
+    except:
+        # If the query couldnt be completed return None
         return None
 
     # List consists of users in chat tagged as viewer or VIP
@@ -38,9 +36,12 @@ def get_current_viewers(channel):
 def get_viewers(j):
     print("Creating dictionary of streamers and viewers...")
     data = {}
-    streamers = [element['user_login'] for element in j['data']]  # Get just the list of streamers
+    # Get just the list of streamers
+    streamers = [element['user_login'] for element in j['data']]
     for streamer in streamers:
-        viewers = get_current_viewers(streamer.lower())  # Get viewers for a particular streamer
+        # Get viewers for a particular streamer
+        viewers = get_current_viewers(streamer.lower())
+        # Add streamer to dictionary with list of viewers as value
         if viewers is not None:
-            data[streamer] = viewers  # Add streamer to dictionary with list of viewers as value
+            data[streamer] = viewers
     return data
