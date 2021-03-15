@@ -2,7 +2,6 @@ import requests
 import json
 import sys
 import io
-import Credentials as cr
 
 #Any instance of sys.stdout.flush() is just to force python to print at the right times so I can keep track of whats happening
 
@@ -12,8 +11,11 @@ def GetTopStreams(numberOfStreams):
     #Change python encoding to UTF-8 because for some reason it doesnt do that by default
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 
+    # temporary so it at least just works for me
+    cr = json.load(open('../credentials.json'))
+
     #Header auth values taken from twitchtokengenerator.com, not sure what to do if they break
-    Headers = {'Client-ID': cr.clientID, 'Authorization': "Bearer " + cr.clientSecret}
+    Headers = {'Client-ID': cr['client-id'], 'Authorization': "Bearer " + cr['access-token']}
 
     #Request top 100 viewed streams on twitch
     r = requests.get('https://api.twitch.tv/helix/streams?first=' + str(numberOfStreams), headers=Headers)
@@ -37,7 +39,7 @@ def GetDictOfStreamersAndViewers(j):
     print("Creating dictionary of streamers and viewers...")
     sys.stdout.flush()
     dict = {}
-    streamers = [element['user_name'] for element in j['data']] #Get just the list of streamers
+    streamers = [element['user_login'] for element in j['data']] #Get just the list of streamers
     for streamer in streamers:
         #print(streamer.lower())
         viewers = getCurrentViewersForChannel(streamer.lower()) #Get viewers for a particular streamer

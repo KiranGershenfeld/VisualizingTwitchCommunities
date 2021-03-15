@@ -1,10 +1,5 @@
 import GetTwitchData
 import CSVWriting
-import Credentials as cr
-import os
-
-#Replace cr.path with the path to the VisualizingTwitchCommunities folder as a string (ex. 'C:/VisualizingTwitchCommunities')
-os.chdir(cr.path)
 
 
 def main():
