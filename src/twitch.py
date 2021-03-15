@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import sys
 
 logger = logging.getLogger('twitch')
 
@@ -14,8 +15,15 @@ async def get_top_streamers(session, credentials, count=100):
 
     logger.info('Getting top %d live streams from Twitch', count)
 
+    token = credentials['access-token']
+
+    # check for token sanity
+    if token == 'demo':
+        logger.error('Please specify your access token in the credentials.json file')
+        sys.exit(1)
+
     # Header auth values taken from twitchtokengenerator.com, not sure what to do if they break
-    headers = {'Client-ID': credentials['client-id'], 'Authorization': f"Bearer {credentials['access-token']}"}
+    headers = {'Client-ID': credentials['client-id'], 'Authorization': f"Bearer {token}"}
 
     # Request top `count` viewed streams on twitch
     async with session.get(f'https://api.twitch.tv/helix/streams?first={count}', headers=headers) as response:

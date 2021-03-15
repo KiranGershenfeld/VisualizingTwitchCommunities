@@ -5,29 +5,6 @@ import logging
 logger = logging.getLogger('analysis')
 
 
-def merge_dicts(first, second):
-    """
-    Merges two dicts with conflicting values being merged as sets
-    """
-
-    merged = {}
-
-    first_keys = set(first)
-    second_keys = set(second)
-    shared_keys = first_keys & second_keys
-
-    for key in shared_keys:
-        merged[key] = list(set(first[key]) | set(second[key]))
-
-    for key in first_keys - second_keys:
-        merged[key] = first[key]
-
-    for key in second_keys - first_keys:
-        merged[key] = second[key]
-
-    return merged
-
-
 def compute_overlaps(named_lists, threshold):
     """
     Computes a graph from a dict of lists where weights are the number of overlapping values.
@@ -84,15 +61,20 @@ def update_data(current_user_data, filename):
     try:
         stored_data = read_data(filename)
         logger.info("Merging new data into stored")
-        merged_data = merge_dicts(current_user_data, stored_data)
+
+        for k, v in current_user_data.items():
+            if existing := stored_data.get(k):
+                stored_data[k] = list(set(existing) | set(v))
+            else:
+                stored_data[k] = v
     except:
         logger.info("No stored data found")
-        merged_data = current_user_data
+        stored_data = current_user_data
 
     logger.info("Writing new data to file %s", filename)
 
     with open(filename, 'w') as f:
-        json.dump(merged_data, f)
+        json.dump(stored_data, f)
 
 
 def read_data(filename):
