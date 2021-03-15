@@ -1,131 +1,149 @@
 import csv
 import json
+import logging
+
+logger = logging.getLogger('analysis')
 
 
-# Combines two dictionaries
-# matching keys will have their value lists appended without duplicate values
-# Comparisons to find duplicate values are done using sets for efficiency
-def combine_dicts(dict1, dict2):
-    dict3 = {}
+def merge_dicts(first, second):
+    """
+    Merges two dicts with conflicting values being merged as sets
+    """
 
-    print("Creating list for keys in both dictionaries...")
+    merged = {}
 
-    set1 = set(dict1)
-    set2 = set(dict2)
-    shared = set1 & set2
+    first_keys = set(first)
+    second_keys = set(second)
+    shared_keys = first_keys & second_keys
 
-    print(f"There are {len(shared)} keys shared")
+    for key in shared_keys:
+        merged[key] = list(set(first[key]) | set(second[key]))
 
-    # For each key in both dictionaries
-    for key in shared:
-        print(f"finding viewer union for {key}...")
-        dict3[key] = list(set(dict1[key]) | set(dict2[key]))
+    for key in first_keys - second_keys:
+        merged[key] = first[key]
 
-    print("Adding dict1 only values...")
-    for key in set1 - set2:
-        dict3[key] = dict1[key]
+    for key in second_keys - first_keys:
+        merged[key] = second[key]
 
-    print("Adding dict2 only values...")
-    for key in set2 - set1:
-        dict3[key] = dict2[key]
-
-    return dict3
+    return merged
 
 
-# This is the main analysis function for the data.
-# It creates a graph where edge values are number of overlapping viewers
-def compute_streamer_overlaps(data, threshold=300):
-    overlap = {}
-    count = 1
+def compute_overlaps(named_lists, threshold):
+    """
+    Computes a graph from a dict of lists where weights are the number of overlapping values.
 
-    # Save which streamers have been processed to avoid repeating
-    completed_streamers = set()
+    The graph is filtered by `threshold` meaning that overlaps below that number would not be recorded.
+    """
 
-    # Make viewer list a set to dramatically decrease comparison time
-    for key in data:
-        data[key] = set(data[key])
+    logger.info("Computing an overlap graph...")
 
-    for key in data:
-        temp_list = {}
+    graph = {}
+    visited = set()
 
-        total_length = len(data.keys())
+    # Convert lists to sets prematurely to avoid doing that multiple times when calculating overlap
+    for k, v in named_lists.items():
+        named_lists[k] = set(v)
 
-        # Print progress so I can keep track
-        print(f"{count}/{total_length}")
+    size = len(named_lists)
+    current = 0
 
-        # Loop through every key again for each key in the dictionary
-        for comparisonKey in data:
-            # If its not a self comparison and the comparison hasn't already been completed
-            if comparisonKey != key and comparisonKey not in completed_streamers:
-                # Find the overlap size of the two streamers using set intersection
-                overlap_size = len(data[key] & data[comparisonKey])
-                # If the size is over 300 add {comparisonStreamer: overlap} to the dictionary
-                if overlap_size > threshold:
-                    temp_list[comparisonKey] = overlap_size
+    for key_a, value_a in named_lists.items():
+        connections = {}
 
-        # Add this comparison dictionary to the larger dictionary for that streamer
-        overlap[key] = temp_list
+        current += 1
+        logger.debug('Computing overlaps for %s (%d/%d)...', key_a, current, size)
 
-        # Add the streamer to completed as no comparisons using this streamer need to be done anymore
-        completed_streamers.add(key)
+        for key_b, value_b in named_lists.items():
+            # Skip the node if already processed or if looking at itself
+            if key_a == key_b or key_b in visited:
+                continue
 
-        count += 1
+            # Calculate the overlap by set intersection
+            overlap = len(value_a & value_b)
 
-    return overlap
+            if overlap > threshold:
+                connections[key_b] = overlap
+
+        logger.debug('%s had %d overlaps', key_a, len(connections))
+
+        graph[key_a] = connections
+        visited.add(key_a)
+
+    logger.info("Finished computing overlaps")
+
+    return graph
 
 
-# This is the main function to update the large csv with all the data in it.
-# It takes in the dictionary of {streamer:[viewers]} that was just queried from Twitch,
-# combines with the existing database, and writes to a csv
 def update_data(current_user_data, filename):
+    """
+    Merges `current_user_data` with the data from the file `filename` and writes the result to that file.
+
+    This operation is idempotent.
+    """
+
     try:
         stored_data = read_data(filename)
-        print("Combining data...")
-        combined_data = combine_dicts(current_user_data, stored_data)
+        logger.info("Merging new data into stored")
+        merged_data = merge_dicts(current_user_data, stored_data)
     except:
-        print("No existing data found")
-        combined_data = current_user_data
+        logger.info("No stored data found")
+        merged_data = current_user_data
 
-    print("Writing data to file...")
+    logger.info("Writing new data to file %s", filename)
+
     with open(filename, 'w') as f:
-        json.dump(combined_data, f)
+        json.dump(merged_data, f)
 
 
-# This function reads out a csv into a dictionary without NaN valus
 def read_data(filename):
-    print("Reading data from file...")
+    """
+    Just reads json viewer data from file `filename` into a Python structure
+    """
+
+    logger.info("Reading stored viewer data from %s", filename)
+
     with open(filename) as f:
         return json.load(f)
 
 
-# Generates a new csv file for the edge list on Gephi
-def write_gephi_data(graph, filename):
+def write_gephi_edges(graph, filename):
+    """
+    Writes a weighted undirected graph into a Gephi-compatible CSV edge-list file
+    """
+
+    logger.info("Exporting graph as a Gephi CSV edge list file %s", filename)
+
     with open(filename, 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["Source", "Target", "Weight"])
         for node_a, connections in graph.items():
-            for node_b, count in connections.items():
-                print(f"{node_a} {node_b}")
-                writer.writerow([node_a, node_b, count])
+            for node_b, weight in connections.items():
+                writer.writerow([node_a, node_b, weight])
 
 
-# Generates a new csv file for the node list labels on Gephi
-def write_gephi_labels(viewer_data, filename):
-    print("Generating Labels...")
+def write_gephi_labels(named_lists, filename):
+    """
+    Writes a dict of lists into a Gephi-compatible CSV node-list file
+    """
+
     with open(filename, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Label", "Count"])
-        for streamer, viewers in viewer_data.items():
-            writer.writerow([streamer, streamer, len(viewers)])
+        for key, values in named_lists.items():
+            writer.writerow([key, key, len(values)])
 
 
-def export(filename, gephi_graph_name, gephi_labels_name):
-    # Read the data from csv
+def generate_gephi_graph(filename, gephi_graph_name, gephi_labels_name, overlap_threshold=300):
+    """
+    Exports data from file `filename` into Gephi CSV graph and label files
+    """
+
     viewer_data = read_data(filename)
 
-    # Process data creating dictionary of {streamer1: {streamer2: overlap, streamer3: overlap}}
-    graph = compute_streamer_overlaps(viewer_data)
+    overlap_graph = compute_overlaps(viewer_data, overlap_threshold)
 
-    # Generate Gephi data files with the dictionaries
-    write_gephi_data(graph, gephi_graph_name)
+    logger.info("Exporting overlap graph as a Gephi CSV edges file %s", filename)
+    write_gephi_edges(overlap_graph, gephi_graph_name)
+
+    logger.info("Exporting viewer data as a Gephi CSV labels file %s", filename)
     write_gephi_labels(viewer_data, gephi_labels_name)
