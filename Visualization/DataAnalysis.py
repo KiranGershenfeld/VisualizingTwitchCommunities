@@ -30,12 +30,12 @@ def read_data(csv_file):
 # This is the main analysis function for the data.
 # It creates a dictionary of the form {streamer1: {streamer2: overlap, streamer3: overlap}}
 # This allows us to have an integer of overlapping viewers for each streamer with every other streamer
-def compute_streamer_overlaps(data):
+def compute_streamer_overlaps(data, threshold=300):
     overlap = {}
     count = 1
 
     # Save which streamers have been processed to avoid repeating
-    completed_streamers = []
+    completed_streamers = set()
 
     # Make viewer list a set to dramatically decrease comparison time
     for key in data:
@@ -56,14 +56,14 @@ def compute_streamer_overlaps(data):
                 # Find the overlap size of the two streamers using set intersection
                 overlap_size = len(data[key] & data[comparisonKey])
                 # If the size is over 300 add {comparisonStreamer: overlap} to the dictionary
-                if overlap_size > 300:
+                if overlap_size > threshold:
                     temp_list[comparisonKey] = overlap_size
 
         # Add this comparison dictionary to the larger dictionary for that streamer
         overlap[key] = temp_list
 
         # Add the streamer to completed as no comparisons using this streamer need to be done anymore
-        completed_streamers.append(key)
+        completed_streamers.add(key)
 
         count += 1
 
