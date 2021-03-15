@@ -1,39 +1,42 @@
-import requests
+import asyncio
 
 
 # Gets the count top streams currently live on twitch. numberOfStreams max is 100
-def get_top_streamers(credentials, count):
+async def get_top_streamers(session, credentials, count):
     print("Getting a list of top live streams...")
 
     # Header auth values taken from twitchtokengenerator.com, not sure what to do if they break
     headers = {'Client-ID': credentials['client-id'], 'Authorization': f"Bearer {credentials['access-token']}"}
 
     # Request top `count` viewed streams on twitch
-    data = requests.get(f'https://api.twitch.tv/helix/streams?first={count}', headers=headers).json()
-
-    # return a list of streamers
-    return [element['user_login'] for element in data['data']]
+    async with session.get(f'https://api.twitch.tv/helix/streams?first={count}', headers=headers) as response:
+        data = await response.json()
+        # return a list of streamers
+        return [element['user_login'] for element in data['data']]
 
 
 # Get the a list of viewers for a given twitch channel from tmi.twitch (Not an API call)
-def get_current_viewers(channel):
+async def get_current_viewers(session, channel):
     print(f"Getting viewers for {channel}...")
 
-    try:
-        r = requests.get(f'http://tmi.twitch.tv/group/user/{channel.lower()}/chatters').json()
-    except:
-        return None
-
-    # List consists of users in chat tagged as viewer or VIP
-    current_viewers = r['chatters']['vips'] + r['chatters']['viewers']
-    return current_viewers
+    async with session.get(f'http://tmi.twitch.tv/group/user/{channel.lower()}/chatters') as r:
+        data = await r.json()
+        # List consists of users in chat tagged as viewer or VIP
+        viewers = data['chatters']['vips'] + data['chatters']['viewers']
+        print(f"Got {len(viewers)} viewers for {channel}...")
+        return viewers
 
 
-# This method looks up the viewers of each streamer in j and creates a large dictionary of {streamer: [viewers]}
-def get_viewer_map(streamers):
+# This method looks up the viewers of each streamer and creates a dictionary of {streamer: [viewers]}
+async def get_viewer_map(session, streamers):
     print("Creating dictionary of streamers and viewers...")
+
     data = {}
-    for streamer in streamers:
-        if viewers := get_current_viewers(streamer):
-            data[streamer] = viewers
+
+    async def add_viewers_task(streamer):
+        data[streamer] = await get_current_viewers(session, streamer)
+
+    # run every task in parallel and wait for the results
+    await asyncio.gather(*map(add_viewers_task, streamers), return_exceptions=True)
+
     return data
