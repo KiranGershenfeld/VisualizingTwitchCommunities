@@ -9,24 +9,19 @@ import twitch
 
 
 async def main():
+    with open('credentials.json') as f:
+        cr = json.load(f)
+
     async with aiohttp.ClientSession() as session:
-
-        # Load our credentials
-        cr = json.load(open('../credentials.json'))
-
-        # Get the top 100 streamers on Twitch
         streamers = await twitch.get_top_streamers(session, cr, count=100)
+        viewer_map = await twitch.get_viewer_map(session, streamers)
 
-        # Create a dictionary of {streamer:[viewers]} from those 100 streams
-        data = await twitch.get_viewer_map(session, streamers)
-
-        # Add that dictionary to the master csv
-        analysis.update_twitch_data(data)
+    analysis.update_data(viewer_map, 'twitch_data.json')
 
 
 # Program Execution
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'export':
-        analysis.export()
+        analysis.export("twitch_data.json", "5DayData.csv", "5DayLabels.csv")
     else:
         asyncio.run(main())
