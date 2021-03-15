@@ -10,7 +10,6 @@ def RemoveNans(dict):
     count = 0
     for key, value in dict.items():
         print(str(count) + "/" + str(length)) #Printing count so I can keep track of progress
-        sys.stdout.flush()
         newDict[key] = [x for x in value if str(x) != 'nan']
         count+= 1
     return newDict
@@ -18,7 +17,6 @@ def RemoveNans(dict):
 #This function reads out a csv into a dictionary without NaN valus
 def ReadOutToDict(csvFile):
     print("Reading csv to dataframe...")
-    sys.stdout.flush()
     df = pd.read_csv(csvFile)
     dict = df.to_dict('list')
     dict = RemoveNans(dict)
@@ -68,7 +66,6 @@ def GenerateGephiData(dict):
 #Generates a new csv file for the node list labels on Gephi
 def GenerateGephiLabels(rawDict):
     print("Generating Labels...")
-    sys.stdout.flush()
     with open("C:/CodeStuff/VisualizingTwitchCommunities/GephiDataRepository/5DayLabels.csv", 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["ID", "Label", "Count"]) #These columns are used in Gephi automatically

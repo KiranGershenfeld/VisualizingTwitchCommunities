@@ -1,15 +1,9 @@
 import requests
 import json
-import sys
-import io
-
-#Any instance of sys.stdout.flush() is just to force python to print at the right times so I can keep track of whats happening
 
 #Gets the numberOfStreams top streams currently live on twitch. numberOfStreams max is 100
 def GetTopStreams(numberOfStreams):
     print("Getting a list of top live streams...")
-    #Change python encoding to UTF-8 because for some reason it doesnt do that by default
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 
     # temporary so it at least just works for me
     cr = json.load(open('../credentials.json'))
@@ -26,7 +20,6 @@ def GetTopStreams(numberOfStreams):
 #Get the a list of viewers for a given twitch channel from tmi.twitch (Not an API call)
 def getCurrentViewersForChannel(channel):
     print("Getting viewers for " + channel + "...")
-    sys.stdout.flush()
     r = requests.get('http://tmi.twitch.tv/group/user/'+ channel.lower() +'/chatters').json()
     if(r != ""):
         currentViewers = r['chatters']['vips'] + r['chatters']['viewers'] #List consists of users in chat tagged as viewer or VIP
@@ -37,7 +30,6 @@ def getCurrentViewersForChannel(channel):
 #This method looks up the viewers of each streamer in j and creates a large dictionary of {streamer: [viewers]}
 def GetDictOfStreamersAndViewers(j):
     print("Creating dictionary of streamers and viewers...")
-    sys.stdout.flush()
     dict = {}
     streamers = [element['user_login'] for element in j['data']] #Get just the list of streamers
     for streamer in streamers:
