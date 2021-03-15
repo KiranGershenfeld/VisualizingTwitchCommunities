@@ -1,13 +1,16 @@
-import GetTwitchData
 import CSVWriting
+import GetTwitchData
 
 
 def main():
-    json = GetTwitchData.GetTopStreams(100) #Get the top 100 streams on Twitch
-    dict = GetTwitchData.GetDictOfStreamersAndViewers(json) #Create a dictionary of {streamer:[viewers]} from those 100 streams
-    CSVWriting.UpdateTwitchData(dict) #Add that dictionary to the master csv
+    # Get the top 100 streams on Twitch
+    json = GetTwitchData.get_top_streams(100)
+    # Create a dictionary of {streamer:[viewers]} from those 100 streams
+    data = GetTwitchData.get_viewers(json)
+    # Add that dictionary to the master csv
+    CSVWriting.update_twitch_data(data)
 
 
-#Program Execution
+# Program Execution
 if __name__ == '__main__':
     main()
