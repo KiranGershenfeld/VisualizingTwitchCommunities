@@ -4,7 +4,7 @@ import requests
 
 
 # Gets the count top streams currently live on twitch. numberOfStreams max is 100
-def get_top_streams(count):
+def get_top_streamers(count):
     print("Getting a list of top live streams...")
 
     # temporary so it at least just works for me
@@ -14,7 +14,10 @@ def get_top_streams(count):
     headers = {'Client-ID': cr['client-id'], 'Authorization': f"Bearer {cr['access-token']}"}
 
     # Request top `count` viewed streams on twitch
-    return requests.get(f'https://api.twitch.tv/helix/streams?first={count}', headers=headers).json()
+    data = requests.get(f'https://api.twitch.tv/helix/streams?first={count}', headers=headers).json()
+
+    # return a list of streamers
+    return [element['user_login'] for element in data['data']]
 
 
 # Get the a list of viewers for a given twitch channel from tmi.twitch (Not an API call)
@@ -33,11 +36,10 @@ def get_current_viewers(channel):
 
 
 # This method looks up the viewers of each streamer in j and creates a large dictionary of {streamer: [viewers]}
-def get_viewers(j):
+def get_viewer_map(streamers):
     print("Creating dictionary of streamers and viewers...")
     data = {}
-    for element in j['data']:
-        streamer = element['user_login']
+    for streamer in streamers:
         if viewers := get_current_viewers(streamer):
             data[streamer] = viewers
     return data
