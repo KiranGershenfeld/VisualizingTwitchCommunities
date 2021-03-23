@@ -11,6 +11,7 @@ import aiohttp
 import asyncio
 
 #Headers = {'Client-ID': , 'Authorization': "Bearer " + } Currently not accessing anything that needs credentials
+#Asyncio optimization makes the viewer requests almost instantaneos. I WAS MADE AWARE OF THIS BY 'necauqua' ON GITHUB. THANKS!
 
 def read_csv_channel_list(file):
     channel_list = []
@@ -47,6 +48,7 @@ async def create_streamer_viewer_dict(channel_list):
     for pair in obj:
         dict.update(pair)
     print(dict)
+
 def main(data, context):
     channel_list = read_csv_channel_list("C:/code/VisualizingTwitchCommunities/DataCollection/ChannelList.txt")
 
