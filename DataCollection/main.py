@@ -50,8 +50,7 @@ async def create_streamer_viewer_dict(channel_list):
     print(dict)
 
 def main(data, context):
-    channel_list = read_csv_channel_list("C:/code/VisualizingTwitchCommunities/DataCollection/ChannelList.txt")
-
+    channel_list = read_csv_channel_list("ChannelList.txt")
     loop = asyncio.get_event_loop()
     data = loop.run_until_complete(create_streamer_viewer_dict(channel_list))
     loop.close()
