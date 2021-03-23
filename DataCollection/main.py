@@ -47,6 +47,7 @@ async def create_streamer_viewer_dict(channel_list):
         obj = await asyncio.gather(*[get_viewers_for_streamer(streamer, session) for streamer in channel_list])
     for pair in obj:
         dict.update(pair)
+    return dict
 
 def main(data, context):
     channel_list = read_csv_channel_list("ChannelList.txt")
