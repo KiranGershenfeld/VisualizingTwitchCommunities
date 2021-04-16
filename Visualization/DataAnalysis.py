@@ -2,38 +2,32 @@ import sys
 import csv
 import pandas as pd
 import pickle
-import Credentials as cr
 import os
 import io
 from datetime import datetime
+from google.cloud import storage
 
-os.chdir(cr.path)
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
-#This function removes NaN values from a dictionary
-def RemoveNans(dict):
-    length = len(dict.items())
-    newDict = {}
-    print("removing nan values from " + str(length) + " entries")
-    count = 0
-    for key, value in dict.items():
-        print(str(count) + "/" + str(length)) #Printing count so I can keep track of progress
-        sys.stdout.flush()
-        newDict[key] = [x for x in value if str(x) != 'nan']
-        count+= 1
-    return newDict
 
-#This function reads out a csv into a dictionary without NaN valus
-def ReadOutToDict(csvFile):
-    print("Reading csv to dataframe...")
-    sys.stdout.flush()
-    df = pd.read_csv(csvFile)
-    dict = df.to_dict('list')
-    dict = RemoveNans(dict)
+def save_pickle(filename, bucketname, data):
+    client = storage.Client()
+    bucket = client.get_bucket(bucketname)
+    blob = bucket.blob(filename)
+    pickle_out = pickle.dumps(data)
+    blob.upload_from_string(pickle_out)
+
+def load_pickle(bucket_name, filename):
+    client = storage.Client()
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.get_blob(filename)
+    blob_string = blob.download_as_string()
+    dict = pickle.loads(blob_string)
     return dict
 
-def loadPickle(name):
-    with open(name + '.pkl', 'rb') as f:
-        return pickle.load(f)
+def load_local_pickle(filename):
+    dict = pickle.load(open(filename, 'rb'))
+    return dict
+
 
 #This is the main analysis function for the data.
 #It creates a dictionary of the form {streamer1: {streamer2: overlap, streamer3: overlap}}
@@ -60,14 +54,14 @@ def CreateOverlapDict(dict):
         count+=1
     return viewerOverlapDict
 
-rawDict = loadPickle("Visualization/TwitchData")
+rawDict = load_pickle("visualizingtwitchcommunities.appspot.com", "4-6-2021-Merged")
 dict = CreateOverlapDict(rawDict) #Process data creating dictionary of {streamer1: {streamer2: overlap, streamer3: overlap}}
+#save_pickle("4-6-21ViewerOverlapDict", "visualizingtwitchcommunities.appspot.com", dict)
 now = datetime.now()
-date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
 #Generates a new csv file for the edge list on Gephi
 def GenerateGephiData(dict):
-    fileString = "Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SEDGELIST.csv"))
+    fileString = "VisualizingTwitchCommunities/Visualization/GephiData/%s" % (now.strftime("%m.%d.%Y.%H.%M.%SEDGELIST.csv"))
     with open(fileString, 'w') as csvfile:
         writer = csv.writer(csvfile)
         #writer.writeheader()
