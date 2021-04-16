@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # CSVs
-*.csv
+DataCollection/**/*.csv
 
 #Pickles
 *.pkl
