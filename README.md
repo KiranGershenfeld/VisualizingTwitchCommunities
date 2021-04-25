@@ -15,7 +15,7 @@ I hate to do this but I do have to pay quite a bit (> $100 a month) for the cont
 ### Map 2 (February 2021):
 [![Twtich Communities February](https://i.postimg.cc/gJxS8fXP/T-witch-Communities-February.png)](https://postimg.cc/fthfhqfH)
 
-### Map 1 (December 2021):
+### Map 1 (December 2020):
 [![Twitch-Communities-March](https://i.postimg.cc/RZZmd0kD/Twitch-Communities-High-Res.png)](https://postimg.cc/2VMg8C8Q)
 
 ## Making Your Own Graphs
