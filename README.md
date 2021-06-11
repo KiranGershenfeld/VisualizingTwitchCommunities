@@ -12,7 +12,7 @@ I do pay a bit out of pocket for the continous cloud compute usage from Google C
 ### Map 4 (May 2021) - Most Recent
 [![Twtich Communities May](https://i.postimg.cc/nrvbzprR/Twitch-Communities-May-PNG5275x5965.png)](https://postimg.cc/XB7D1Mwd)
 
-### Map 3 (Mid March - Mid April 2021
+### Map 3 (Mid March - Mid April 2021)
 [![Twtich Communities MarchApril](https://i.postimg.cc/ydzG4s2B/Twitch-Communities-March-April.png)](https://postimg.cc/mc8j7fb6)
 
 ### Map 2 (February 2021):
