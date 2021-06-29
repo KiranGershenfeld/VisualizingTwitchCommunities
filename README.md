@@ -48,7 +48,7 @@ If you want to detect communities like I did follow these steps:
 8. Click apply to color the nodes according to your detected communities!
 
 ### Laying out the nodes
-Gephi has a bunch of layour algorithms built in. You can find them in the "Layout" menu in the bottom left under the "Choose a Layout" dropdown. To get the maps to look the way I did involves doing a few of the algorithms in a row, adjusting a ton of the layout algorithm settings, and a fair amount of precision. I also have some filtering of low weight edges in the "Filters" -> "Queries" menu on the right hand side and I manually move some outer clusters and nodes towards the main graph cluster to make it more cohesive. The details of this will remain a trade secret for now but anyone is capable of similar results with a bit of experimentation. 
+Gephi has a bunch of layout algorithms built in. You can find them in the "Layout" menu in the bottom left under the "Choose a Layout" dropdown. To get the maps to look the way I did involves doing a few of the algorithms in a row, adjusting a ton of the layout algorithm settings, and a fair amount of precision. I also have some filtering of low weight edges in the "Filters" -> "Queries" menu on the right hand side and I manually move some outer clusters and nodes towards the main graph cluster to make it more cohesive. The details of this will remain a trade secret for now but anyone is capable of similar results with a bit of experimentation. 
 
 ## Running the Project
 Disclaimer: I am by no means a python expert and the code I write for this project is done as a hobby.
