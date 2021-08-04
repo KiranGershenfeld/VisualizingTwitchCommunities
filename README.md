@@ -9,7 +9,10 @@ I am trying to create these maps monthly but they do take a fair amount of work 
 I do pay a bit out of pocket for the continous cloud compute usage from Google Cloud Platform so if this project provides you some value and you have the spare change anything I recieve will go directly to hosting costs. https://paypal.me/KiranGershenfeld?locale.x=en_US
 
 ## Results
-### Map 5 (June 2021) - Most Recent
+### Map 6 (July 2021) - Most Recent
+[![Twtich Communities July](https://i.postimg.cc/G3QTkdXJ/Twitch-Map-July-PNG.png)](https://postimg.cc/Z0WqmttC)
+
+### Map 5 (June 2021)
 [![Twtich Communities June](https://i.postimg.cc/Gpvh4QBV/Twitch-Atlas-June-PNG.png)](https://postimg.cc/xkTS7L33)
 
 ### Map 4 (May 2021)
