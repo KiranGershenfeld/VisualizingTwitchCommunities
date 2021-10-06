@@ -9,7 +9,10 @@ I wrote an article on Towards Data Science explaining what these graphs are, how
 I am trying to create these maps monthly but they do take a fair amount of work so there may be delays.
 
 ## Results
-### Map 6 (July 2021) - Most Recent
+### Map 7 (September 2021) - Most Recent
+[![Twtich Communities September](https://i.postimg.cc/CK3jx7b0/Twitch-Atlas-September-PNG.png)](https://postimg.cc/SXGXZWZ1)
+
+### Map 6 (July 2021)
 [![Twtich Communities July](https://i.postimg.cc/G3QTkdXJ/Twitch-Map-July-PNG.png)](https://postimg.cc/Z0WqmttC)
 
 ### Map 5 (June 2021)
