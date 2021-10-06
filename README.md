@@ -1,4 +1,6 @@
 # Visualizing Twitch Communities
+## Website
+The most recent map is now live at https://twitchatlas.com
 ## Overview
 This project aims to map popular channels on Twitch.tv in a way that feels intuitive to both viewers and streamers. This is accomplished by collecting who is watching different streamers at regular intervals, comparing these lists, and turning that information into a network diagram. All code is written in python and the visualization is done using Gephi. 
 
@@ -6,10 +8,11 @@ I wrote an article on Towards Data Science explaining what these graphs are, how
 
 I am trying to create these maps monthly but they do take a fair amount of work so there may be delays.
 
-I do pay a bit out of pocket for the continous cloud compute usage from Google Cloud Platform so if this project provides you some value and you have the spare change anything I recieve will go directly to hosting costs. https://paypal.me/KiranGershenfeld?locale.x=en_US
-
 ## Results
-### Map 6 (July 2021) - Most Recent
+### Map 7 (September 2021) - Most Recent
+[![Twtich Communities September](https://i.postimg.cc/CK3jx7b0/Twitch-Atlas-September-PNG.png)](https://postimg.cc/SXGXZWZ1)
+
+### Map 6 (July 2021)
 [![Twtich Communities July](https://i.postimg.cc/G3QTkdXJ/Twitch-Map-July-PNG.png)](https://postimg.cc/Z0WqmttC)
 
 ### Map 5 (June 2021)
