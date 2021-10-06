@@ -11,7 +11,7 @@ import aiohttp
 import asyncio
 
 #Headers = {'Client-ID': , 'Authorization': "Bearer " + } Currently not accessing anything that needs credentials
-#Asyncio optimization makes the viewer requests almost instantaneos. I WAS MADE AWARE OF THIS BY 'necauqua' ON GITHUB. THANKS!
+#Asyncio optimization makes the viewer requests almost instantaneos.
 
 def read_csv_channel_list(file):
     channel_list = []

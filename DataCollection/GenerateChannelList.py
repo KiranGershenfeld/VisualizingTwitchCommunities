@@ -1,9 +1,8 @@
 import csv
 import os
 
-os.chdir("C:/code/VisualizingTwitchCommunities")
 channel_list = []
-for file in os.scandir("SullyGnomeChannelData"):
+for file in os.scandir("DataCollection/SullyGnomeChannelData"):
     with open(file, encoding='utf-8') as csvFile:
         reader = csv.DictReader(csvFile)
         for row in reader:
@@ -16,6 +15,7 @@ for index, streamer in enumerate(channel_list):
         streamer = streamer[startIndex:endIndex]
         channel_list[index] = streamer
 
+print(len(channel_list))
 
-with open('ChannelList.txt', 'w', encoding='utf-8') as writeFile:
+with open('DataCollection/ChannelList.txt', 'w', encoding='utf-8') as writeFile:
     writeFile.writelines("%s\n" % channel for channel in channel_list)

@@ -1,0 +1,55 @@
+{
+  "type": "network",
+  "version": "1.0",
+  "data": "data.json",
+  "logo": {
+    "file": "",
+    "link": "",
+    "text": ""
+  },
+  "text": {
+    "more": "<div style='padding-bottom: 10px; font-size: 2em; font-weight: bold; line-height: 1.2em; text-align: center;'>What is this?</div><p style='line-height: 1.35em; font-size: 17.5px'><b>This is an algorithmically generated map of Twitch</b><ul style='font-size: 1.25em;margin-left: 15px; padding-bottom: 5px; line-height: 1.5em; font-size: 1.4em; list-style-type: circle;'><li>Each bubble is a Twitch channel.</li> <li>Each edge represents the overlap of chatters between those two channels. All edges on this map represent an overlap of at least 1000 chatters.</li> <li>The colors are algorithmically assigned by detecting communities.</li> <li>The layout of the map was constructed using force directed layout algorithms.</li></ul><br><br><p style='line-height: 1.35em; font-size: 17.5px'><b>Website Controls</b><ul style='font-size: 1.25em;margin-left: 15px; padding-bottom: 5px; line-height: 1.5em; font-size: 1.4em; list-style-type: circle;'><li>Left click and drag to pan.</li> <li>Scroll to zoom. Trackpad zoom might not work very well but the zoom in, out, and center buttons at the bottom should help out in that case.</li> <li>Click on a channel to see channel info and filter the map to only that channel's connections (ie. channels that have more share more than 1000 chatters with the selected channel).</li><li>The label behavior can be a bit strange, center the map via the bottom button to reset everything.</li><li>Mobile viewing is currently not supported.</li></ul> <p style='font-size: 17.5px; line-height: 1.35em;'><br>I have not done too much web development like this so please be patient as I learn what works and what doesn't. A large map of YouTube project is nearing completion and this is acting as a trial run for that website, look out for that if your interested!<br><br>This is an open source project made with <a href='http://sigmajs.org/'>SigmaJS</a> and <a href='https://gephi.org/'>Gephi</a>, find resources <a href='https://github.com/KiranGershenfeld/VisualizingTwitchCommunities'>here</a>.</p>",
+    "intro": "Generated based on overlap of chatters",
+    "title": "Twitch Atlas"
+  },
+  "legend": {
+    "edgeLabel": "Shared Chatters",
+    "colorLabel": "Detected Community",
+    "nodeLabel": "Channel"
+  },
+  "features": {
+    "search": true,
+    "groupSelectorAttribute": false,
+    "hoverBehavior": "default"
+  },
+  "informationPanel": {
+    "groupByEdgeDirection": false,
+    "imageAttribute": false
+  },
+  "sigma": {
+    "drawingProperties": {
+      "defaultEdgeType": "curve",
+      "defaultHoverLabelBGColor": "#002147",
+      "defaultLabelBGColor": "#ddd",
+      "activeFontStyle": "bold",
+      "defaultLabelColor": "#FFFFFF",
+      "labelAlignemnt": "center",
+      "labelThreshold": 7.3,
+      "defaultLabelHoverColor": "#fff",
+      "hoverFontStyle": "bold",
+      "labelSize": "proportional",
+      "defaultLabelSize": 7,
+      "autoRescale": ["nodePosition, nodeSize"]
+    },
+    "graphProperties": {
+      "maxEdgeSize": 0.8,
+      "minEdgeSize": 0.2,
+      "minNodeSize": 1,
+      "maxNodeSize": 7.5
+    },
+    "mouseProperties": {
+      "maxRatio": 20,
+      "minRatio": 0.75
+    }
+  }
+}
