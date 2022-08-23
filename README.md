@@ -1,6 +1,6 @@
 # Visualizing Twitch Communities
-## Website
-The most recent map is now live at https://twitchatlas.com
+## Reactions
+This project has accumulated millions of impressions across a variety of social media platforms including YouTube, Reddit, and Twitter. A playlist of popular reaction videos is available [here](https://www.youtube.com/playlist?list=PLCgMcJdIpEnADGngmh7u7q9T8geigZkOY)
 ## Overview
 This project aims to map popular channels on Twitch.tv in a way that feels intuitive to both viewers and streamers. This is accomplished by collecting who is watching different streamers at regular intervals, comparing these lists, and turning that information into a network diagram. All code is written in python and the visualization is done using Gephi. 
 
