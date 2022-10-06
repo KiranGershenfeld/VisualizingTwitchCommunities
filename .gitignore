@@ -9,6 +9,9 @@ __pycache__/
 # CSVs
 DataCollection/**/*.csv
 
+#GEXF
+*.gexf
+
 #Pickles
 *.pkl
 
