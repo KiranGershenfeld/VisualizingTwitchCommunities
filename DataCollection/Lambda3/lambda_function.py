@@ -27,12 +27,13 @@ def lambda_handler(event, context):
 
         if(request.status_code == 200):
             data = request.json()['data']
-            channels = [{'url_name': channel['url'], 'display_name': channel['displayname'], 'is_current_top_stream': True} for channel in data]
+            channels = [{'url_name': channel['url'], 'display_name': channel['displayname'], 'is_current_top_stream': True, 'view_minutes': channel['viewminutes']} for channel in data]
             channel_list.extend(channels)
         else:
             print(request)
             print(f"Response returned with status code: {request.status_code}")
 
+    print(len(channel_list))
     channel_list = channel_list[0: NUM_CHANNELS] #List of dicts containing info about each top streamer
 
     #Connect to database
@@ -52,7 +53,10 @@ def lambda_handler(event, context):
     insert_stmt = ps_insert(channels_table).values(channel_list)
     do_upsert_stmt = insert_stmt.on_conflict_do_update(
         index_elements=['url_name'],
-        set_ = {'is_current_top_stream': True}
+        set_ = {
+            'is_current_top_stream': True, 
+            'view_minutes': insert_stmt.excluded.view_minutes
+        }
     )
 
     with engine.connect() as conn:
