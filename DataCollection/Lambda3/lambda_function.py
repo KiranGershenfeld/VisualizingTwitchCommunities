@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-NUM_CHANNELS = 500
+NUM_CHANNELS = 1000
 
 def lambda_handler(event, context):
     #Get top streamers in the last 30 days
