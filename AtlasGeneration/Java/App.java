@@ -1,4 +1,4 @@
-// import net.sf.py4j.GatewayServer;
+import py4j.GatewayServer;
 import org.openide.util.Lookup;
 import org.gephi.project.api.*;
 import org.gephi.statistics.api.StatisticsController;
@@ -72,14 +72,23 @@ public class App
 {   
     public static void main(String[] args)
     {
-        //Init a project - and therefore a workspace
+        // GatewayServer gatewayServer = new GatewayServer(new App());
+        // gatewayServer.start();
+        // System.out.println("Gateway Server Started");
+        Run(7);
+    }
+
+    public static void Run(int batch_id)
+    {
+        System.out.println("Atlas Generation Started");
+        // Init a project - and therefore a workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.newProject();
         Workspace workspace = pc.getCurrentWorkspace();
 
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
 
-        GraphModel graphModel = LoadGraph(importController, workspace);
+        GraphModel graphModel = LoadGraph(importController, workspace, batch_id);
 
         LayoutGraph(graphModel, 5);
         SetGraphPreview();
@@ -127,6 +136,7 @@ public class App
         //Filter, remove degree < 10
         // Range range = new Range((int) 10, Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
     
+        System.out.println("Edge removal");
         int edgeWeightLowerBound = 1000;
         List<Edge> edgesToRemove = new ArrayList<>();
         for (Edge e : undirectedGraph.getEdges().toArray()) {
@@ -264,8 +274,10 @@ public class App
         return;
     }
 
-    public static GraphModel LoadGraph(ImportController importController, Workspace workspace)
+    public static GraphModel LoadGraph(ImportController importController, Workspace workspace, int batch_id)
     {
+        System.out.println("STARTING LOAD GRAPH");
+        // System.out.println(System.getenv("DB_PASSWORD"));
 
         //Load gephi from rdbms
         //Get controllers and models
@@ -276,22 +288,24 @@ public class App
         db.setDBName("wobbly-herder-2498.twitchatlas");
         db.setHost("free-tier4.aws-us-west-2.cockroachlabs.cloud");
         db.setUsername("kiran");
-        db.setPasswd("");
+        db.setPasswd(System.getenv("DB_PASSWORD"));
         db.setPort(26257);
         db.setSQLDriver(new PostgreSQLDriver());
 
         db.setNodeQuery("SELECT c.url_name as id, c.url_name as label, c.view_minutes as count from channels c");
-        db.setEdgeQuery("SELECT source, target, weight FROM channel_overlaps where log_time <= '2022-10-20 00:00:00.000' and log_time >='2022-10-19 23:00:00.000'");
+        db.setEdgeQuery("SELECT source, target, weight FROM channel_overlaps where batch_id=" + String.valueOf(batch_id));
     
+        System.out.println("IMPORTING DATABASE");
         ImporterEdgeList edgeListImporter = new ImporterEdgeList();
         Container container = importController.importDatabase(db, edgeListImporter);
         container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);   //Force UNDIRECTED
         
+        System.out.println("PROCESSING DATABASE");
         //Append imported data to GraphAPI
         importController.process(container, new DefaultProcessor(), workspace);
 
+        System.out.println("ENDING LOAD GRAPH");
         return graphModel;
-        
     }
 
     public static void ExportGraph(Graph graph)
@@ -315,10 +329,8 @@ public class App
         exporter.setHeight(4096);
         exporter.setWidth(4096);
 
-
-
         try {
-            ec.exportFile(new File("GephiVisualization/GenAtlas.png"), exporter);
+            ec.exportFile(new File("../Images/GenAtlas.png"), exporter);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
