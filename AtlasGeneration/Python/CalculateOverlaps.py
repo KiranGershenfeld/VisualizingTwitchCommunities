@@ -152,6 +152,38 @@ class OverlapsManager:
 
         return 
                 
+    def calc_stats(self, batch_id):
+        import networkx as nx
+        overlaps_table = sql.Table("channel_overlaps", self.metadata_obj, autoload_with=self.engine)
+
+        #Get next batch_id
+        stmt = sql.select(overlaps_table.c.source, overlaps_table.c.target, overlaps_table.c.weight).where((overlaps_table.c.batch_id == batch_id) & (overlaps_table.c.weight >= 1000))
+        with self.engine.connect() as conn:
+            res = conn.execute(stmt).fetchall()
+        
+        network_data = {}
+        for source, target, weight in res:
+            if source in network_data:
+                network_data[source][target] = {"weight": weight}
+            else:
+                network_data[source] = {target: {"weight": weight}}
+        
+        G = nx.from_dict_of_dicts(network_data)
+        ec = nx.eigenvector_centrality(G)
+        ec = sorted([(v, c) for v, c in ec.items()], key=lambda x: x[1], reverse=True)
+
+        bc = nx.betweenness_centrality(G)
+        bc = sorted([(v, c) for v, c in bc.items()], key=lambda x: x[1], reverse=True)
+
+        cc = nx.closeness_centrality(G)
+        cc = sorted([(v, c) for v, c in cc.items()], key=lambda x: x[1], reverse=True)
+
+        return {
+            "eigenvector_centrality": ec,
+            "betweeness_centrality": bc,
+            "closeness_centrality": cc
+        }
+
 
 if __name__ == "__main__":
     import os

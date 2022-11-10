@@ -36,6 +36,8 @@ import org.gephi.layout.plugin.fruchterman.FruchtermanReingold;
 import org.gephi.layout.plugin.labelAdjust.LabelAdjust;
 import org.gephi.layout.plugin.openord.OpenOrdLayout;
 import org.gephi.layout.plugin.scale.ExpandLayout;
+import org.gephi.layout.plugin.scale.ContractLayout;
+
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.plugin.force.Displacement;
 import org.gephi.layout.plugin.force.StepDisplacement;
@@ -90,7 +92,7 @@ public class App
 
         GraphModel graphModel = LoadGraph(importController, workspace, batch_id);
 
-        LayoutGraph(graphModel, 5);
+        LayoutGraph(graphModel);
         SetGraphPreview();
     
         UndirectedGraph graph = graphModel.getUndirectedGraph();
@@ -129,7 +131,7 @@ public class App
         return;
     }
 
-    public static void LayoutGraph(GraphModel graphModel, int executionTime)
+    public static void LayoutGraph(GraphModel graphModel)
     {
         Graph undirectedGraph = graphModel.getUndirectedGraph();
         //Apply graph filters 
@@ -186,7 +188,7 @@ public class App
 
 
         Modularity modularity = new Modularity();
-        modularity.setResolution(0.3);
+        modularity.setResolution(0.4);
         modularity.setUseWeight(true);
         modularity.execute(graphModel);
 
@@ -217,7 +219,7 @@ public class App
         RankingLabelSizeTransformer rankingLabelSizeTransformer = rankingLabelSize.getTransformer();
 
         rankingNodeSizeTransformer.setMinSize(10f);
-        rankingNodeSizeTransformer.setMaxSize(50f);
+        rankingNodeSizeTransformer.setMaxSize(40f);
 
         rankingLabelSizeTransformer.setMinSize(0.3f);
         rankingLabelSizeTransformer.setMaxSize(0.4f);
@@ -225,11 +227,25 @@ public class App
         appearanceController.transform(rankingNodeSize);
         appearanceController.transform(rankingLabelSize);
 
-        //Perform layout
-        //Layout for 1 minute
-        AutoLayout autoLayout = new AutoLayout(executionTime, TimeUnit.SECONDS);
-        autoLayout.setGraphModel(graphModel);
+        // Unused layouts
+        // LabelAdjust labelAdjustStep = new LabelAdjust(null);
+        // labelAdjustStep.setGraphModel(graphModel);
+        // labelAdjustStep.setAdjustBySize(true);
+        // labelAdjustStep.setSpeed(10.0);
 
+        
+        // YifanHuLayout yifanHuStep = new YifanHuLayout(null, new StepDisplacement(1f));
+        // yifanHuStep.setGraphModel(graphModel);
+        // yifanHuStep.setOptimalDistance(1000f);
+
+        // OpenOrdLayout openOrdLayout = new OpenOrdLayout(null);
+
+        // ExpandLayout expandLayout = new ExpandLayout(null, 1.05);
+
+        // FruchtermanReingold fruchtermanReingoldStep = new FruchtermanReingold(null);
+
+
+        //FORCE ATLAS INITIALIZATION
         ForceAtlas2 forceAtlasStep = new ForceAtlas2(null);
         forceAtlasStep.resetPropertiesValues();
         forceAtlasStep.setGraphModel(graphModel);
@@ -238,38 +254,46 @@ public class App
         forceAtlasStep.setAdjustSizes(true);
         forceAtlasStep.setLinLogMode(true);
         forceAtlasStep.setOutboundAttractionDistribution(false);
-        forceAtlasStep.setScalingRatio(1.5d);
-        forceAtlasStep.setGravity(2d);
-        forceAtlasStep.setEdgeWeightInfluence(0.28d);
+        forceAtlasStep.setScalingRatio(5d);
+        forceAtlasStep.setGravity(1d);
+        forceAtlasStep.setEdgeWeightInfluence(0.45d);
 
-        LabelAdjust labelAdjustStep = new LabelAdjust(null);
-        labelAdjustStep.setGraphModel(graphModel);
-        labelAdjustStep.setAdjustBySize(true);
-        labelAdjustStep.setSpeed(10.0);
-
-        
-        YifanHuLayout yifanHuStep = new YifanHuLayout(null, new StepDisplacement(1f));
-        yifanHuStep.setGraphModel(graphModel);
-        yifanHuStep.setOptimalDistance(1000f);
-
-        OpenOrdLayout openOrdLayout = new OpenOrdLayout(null);
-
-        ExpandLayout expandLayout = new ExpandLayout(null, 1.05);
-
-        FruchtermanReingold fruchtermanReingoldStep = new FruchtermanReingold(null);
-
+        //RUN FIRST PHASE
         Layout firstAlgo = forceAtlasStep;
-        int firstAlgoSteps =1000;
+        int firstAlgoSteps = 2000;
 
         firstAlgo.initAlgo();
         
-       
-        System.out.println("STARTING LAYOUT EXECUTION");
+        System.out.println("FIRST PHASE EXECUTION");
         for (int k = 0; k < firstAlgoSteps; k++)
         {
             firstAlgo.goAlgo();
         }
-       
+
+        //CHANGE PARAMETERS AND RUN SECOND PHASE
+        forceAtlasStep.setScalingRatio(1d);
+        forceAtlasStep.setLinLogMode(false);
+        forceAtlasStep.setEdgeWeightInfluence(0.28d);
+        int secondAlgoSteps = 350;
+        
+        System.out.println("SECOND PHASE EXECUTION");
+        for (int k = 0; k < secondAlgoSteps; k++)
+        {
+            firstAlgo.goAlgo();
+        }
+
+        //CHANGE PARAMETERS AND RUN THIRD PHASE
+        forceAtlasStep.setScalingRatio(1.1d);
+        forceAtlasStep.setLinLogMode(true);
+        forceAtlasStep.setEdgeWeightInfluence(0.4d);
+        int thirdAlgoSteps = 1000;
+        
+        System.out.println("THIRD PHASE EXECUTION");
+        for (int k = 0; k < thirdAlgoSteps; k++)
+        {
+            firstAlgo.goAlgo();
+        }
+
         System.out.println("ENDING LAYOUT EXECUTION");
         return;
     }
@@ -326,11 +350,11 @@ public class App
         // exporter.setExportVisible(true); //Only exports the visible (filtered) graph
 
         //Set png options
-        exporter.setHeight(4096);
-        exporter.setWidth(4096);
+        exporter.setHeight(5500);
+        exporter.setWidth(5500);
 
         try {
-            ec.exportFile(new File("../Images/GenAtlas.png"), exporter);
+            ec.exportFile(new File("../Images/GeneratedAtlas.png"), exporter);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import datetime
 from py4j.java_gateway import JavaGateway
 import logging
+
 logging.basicConfig(filename='.log', level=logging.DEBUG, 
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
