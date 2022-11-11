@@ -11,6 +11,7 @@ I have also written an article on Towards Data Science explaining what these gra
 
 ## Tech Stack
 The newest iteration of this project is now approaching 100% automation. This is accomplished with the following architecture
+
 ![Twitch Atlas Architecture](TwitchAtlasArchitecture.drawio.png?raw=true "Title")
 
 ## Gallery of Old Atlas'
