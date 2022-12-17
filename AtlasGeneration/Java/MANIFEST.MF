@@ -1,0 +1,7 @@
+Manifest-Version: 1.0    
+Archiver-Version: whatever  
+Created-By: whatever  
+Built-By: author-name  
+Build-Jdk: 1.6.0_34  
+Class-Path: gephi-toolkit-0.9.3-all.jar
+Main-Class: App

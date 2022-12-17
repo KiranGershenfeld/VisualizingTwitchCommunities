@@ -1,15 +1,21 @@
 # Visualizing Twitch Communities
+## Overview
+This project aims to map popular channels on Twitch.tv in a way that feels intuitive to both viewers and streamers. This is accomplished by collecting who is watching different streamers at regular intervals and using that data to create a network graph. 
+
+New Twitch Atlas posts every month at https://twitter.com/TwitchAtlasMap!
+
 ## Reactions
 This project has accumulated millions of impressions across a variety of social media platforms including YouTube, Reddit, and Twitter. A playlist of popular reaction videos is available [here](https://www.youtube.com/playlist?list=PLCgMcJdIpEnADGngmh7u7q9T8geigZkOY)
-## Overview
-This project aims to map popular channels on Twitch.tv in a way that feels intuitive to both viewers and streamers. This is accomplished by collecting who is watching different streamers at regular intervals, comparing these lists, and turning that information into a network diagram. All code is written in python and the visualization is done using Gephi. 
 
-I wrote an article on Towards Data Science explaining what these graphs are, how to read them, and how they were created. You can read that (for free!) [here](https://towardsdatascience.com/insights-from-visualizing-public-data-on-twitch-a73304a1b3eb).
+I have also written an article on Towards Data Science explaining what these graphs are, how to read them, and how they were created. You can read that (for free!) [here](https://towardsdatascience.com/insights-from-visualizing-public-data-on-twitch-a73304a1b3eb).
 
-I am trying to create these maps monthly but they do take a fair amount of work so there may be delays.
+## Tech Stack
+The newest iteration of this project is now approaching 100% automation. This is accomplished with the following architecture
 
-## Results
-### Map 7 (September 2021) - Most Recent
+![Twitch Atlas Architecture](TwitchAtlasArchitecture.drawio.png?raw=true "Title")
+
+## Gallery of Old Atlas'
+### Map 7 (September 2021)
 [![Twtich Communities September](https://i.postimg.cc/CK3jx7b0/Twitch-Atlas-September-PNG.png)](https://postimg.cc/SXGXZWZ1)
 
 ### Map 6 (July 2021)
@@ -30,9 +36,7 @@ I am trying to create these maps monthly but they do take a fair amount of work 
 ### Map 1 (December 2020):
 [![Twitch-Communities-March](https://i.postimg.cc/RZZmd0kD/Twitch-Communities-High-Res.png)](https://postimg.cc/2VMg8C8Q)
 
-## Making Your Own Graphs
-If you want to run the project from scratch, collect your own data, and graph it please go down to the "Running The Project" section to get the code running. If you want to mess with the graph using the data I have collected than your in luck! It's super easy and requires no coding. 
-
+## Visualization Tutorial
 I used a program called Gephi which while extremely powerful has many bugs, limitations, and problems. You will encounter these in your time with the program so just beware. You can download Gephi for free from their website [here](https://gephi.org/). You will also want to download the most recent data in this repository which can be done by navigating the file structure above to "Visualization/GephiData." Pick the most recent date and download the edgelist file and the labels file. 
 
 ### Importing Data
@@ -58,25 +62,3 @@ If you want to detect communities like I did follow these steps:
 
 ### Laying out the nodes
 Gephi has a bunch of layout algorithms built in. You can find them in the "Layout" menu in the bottom left under the "Choose a Layout" dropdown. To get the maps to look the way I did involves doing a few of the algorithms in a row, adjusting a ton of the layout algorithm settings, and a fair amount of precision. I also have some filtering of low weight edges in the "Filters" -> "Queries" menu on the right hand side and I manually move some outer clusters and nodes towards the main graph cluster to make it more cohesive. The details of this will remain a trade secret for now but anyone is capable of similar results with a bit of experimentation. 
-
-## Running the Project
-Disclaimer: I am by no means a python expert and the code I write for this project is done as a hobby.
-
-The first map was done entirely off my personal computer. If you want something similar look at the "Local Running" section below.
-
-All following maps are done with heavy integration with the Google Cloud Platform and their Compute Engine. If you are interesting in a more sustainable and automated approach go to the "Cloud Automation" section below. 
-
-### Local Running
-If you want to run this project locally, you can go to the "Legacy-(Local)" branch and get the code from there. That code is not as well maintained as the default branch and misses some of the big opimization improvements but it should work with some adjusting of filepaths and adding your own API credentials. You will probably need experience with python, git, and coding in general in order to get it working properly but none of it is particularly complicated. 
-
-### Cloud Automation
-For every map past the first one I have automated a lot of the data collecting using the Google Cloud Compute Engine. The code for this can be found in the default branch called "Cloud Compute." I did a lot of work debugging, experimenting, and learning to get this to work in a way that was sustainable and I cannot write out all that information here. If you are planning to set this up yourself I assume you have the skills to learn to do so. The process I used was to schedule a job using the Google Cloud Scheduler to send a message to a topic once an hour. Make a Google Cloud Function that subrscribes to that topic and calls a script on a Compute Engine virtual machine. This machine needs to be running a script that can recieve the function call. I did this by running the listener script with "nohup listenerscript.py &" which allows the vm to run the script continously even if you exit. 
-
-The tutorial I followed to do this can be found here: https://github.com/GoogleCloudPlatform/reliable-task-scheduling-compute-engine-sample .
-
-I dont have an intuitive understanding of how this all works so apologies if my description is inaccurate. 
-
-## Credit
-This is a hobby project done by [Kiran Gershenfeld](https://kirangershenfeld.dev/). 
-
-Shoutout to [necauqua](https://github.com/necauqua) who gave me some inspiration for optimizing and condensing my scripts. They have a cloned version of the project on their profile with very clean code if thats your jam. 
