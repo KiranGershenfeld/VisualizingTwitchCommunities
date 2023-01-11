@@ -13,6 +13,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+*.DS_Store
 *.pem
 *.class
 *.jar
@@ -164,3 +165,28 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+web-react/node_modules
+web-react/.pnp
+web-react/.pnp.js
+
+# testing
+web-react/coverage
+
+# production
+web-react/build
+
+# misc
+web-react/.DS_Store
+web-react/.env.local
+web-react/.env.development.local
+web-react/.env.test.local
+web-react/.env.production.local
+
+web-react/npm-debug.log*
+web-react/yarn-debug.log*
+web-react/yarn-error.log*

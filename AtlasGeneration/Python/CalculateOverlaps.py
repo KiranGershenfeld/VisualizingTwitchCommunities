@@ -169,10 +169,10 @@ class OverlapsManager:
                 network_data[source] = {target: {"weight": weight}}
         
         G = nx.from_dict_of_dicts(network_data)
-        ec = nx.eigenvector_centrality(G)
+        ec = nx.eigenvector_centrality(G, weight='weight', max_iter=1000)
         ec = sorted([(v, c) for v, c in ec.items()], key=lambda x: x[1], reverse=True)
 
-        bc = nx.betweenness_centrality(G)
+        bc = nx.betweenness_centrality(G, weight='weight')
         bc = sorted([(v, c) for v, c in bc.items()], key=lambda x: x[1], reverse=True)
 
         cc = nx.closeness_centrality(G)

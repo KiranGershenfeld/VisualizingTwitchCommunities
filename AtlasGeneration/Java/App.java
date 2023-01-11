@@ -1,4 +1,6 @@
 import py4j.GatewayServer;
+// import uk.ac.ox.oii.jsonexporter.JSONExporter;
+
 import org.openide.util.Lookup;
 import org.gephi.project.api.*;
 import org.gephi.statistics.api.StatisticsController;
@@ -70,6 +72,8 @@ import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Font;
 
+// import uk.ac.ox.oii.jsonexporter.JSONExporter;
+
 public class App 
 {   
     public static void main(String[] args)
@@ -77,27 +81,33 @@ public class App
         // GatewayServer gatewayServer = new GatewayServer(new App());
         // gatewayServer.start();
         // System.out.println("Gateway Server Started");
-        Run(7);
+        Run(9);
     }
 
     public static void Run(int batch_id)
     {
         System.out.println("Atlas Generation Started");
         // Init a project - and therefore a workspace
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.newProject();
-        Workspace workspace = pc.getCurrentWorkspace();
+        
+        int numImages = 10;
+        for (int i = 0; i < numImages; i++)
+        {
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            pc.newProject();
+            Workspace workspace = pc.getCurrentWorkspace();
 
-        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+            ImportController importController = Lookup.getDefault().lookup(ImportController.class);
 
-        GraphModel graphModel = LoadGraph(importController, workspace, batch_id);
+            GraphModel graphModel = LoadGraph(importController, workspace, batch_id);
 
-        LayoutGraph(graphModel);
-        SetGraphPreview();
-    
-        UndirectedGraph graph = graphModel.getUndirectedGraph();
-        ExportGraph(graph);
+            LayoutGraph(graphModel);
+            SetGraphPreview();
+        
+            UndirectedGraph graph = graphModel.getUndirectedGraph();
+            // ExportGexf(graph, "../../Website/webdata.json");
+            ExportGraph(graph, i);
 
+        }
         System.exit(0);
     }
 
@@ -255,12 +265,12 @@ public class App
         forceAtlasStep.setLinLogMode(true);
         forceAtlasStep.setOutboundAttractionDistribution(false);
         forceAtlasStep.setScalingRatio(5d);
-        forceAtlasStep.setGravity(1d);
+        forceAtlasStep.setGravity(3d);
         forceAtlasStep.setEdgeWeightInfluence(0.45d);
 
         //RUN FIRST PHASE
         Layout firstAlgo = forceAtlasStep;
-        int firstAlgoSteps = 2000;
+        int firstAlgoSteps = 750;
 
         firstAlgo.initAlgo();
         
@@ -271,7 +281,7 @@ public class App
         }
 
         //CHANGE PARAMETERS AND RUN SECOND PHASE
-        forceAtlasStep.setScalingRatio(1d);
+        forceAtlasStep.setScalingRatio(1.5d);
         forceAtlasStep.setLinLogMode(false);
         forceAtlasStep.setEdgeWeightInfluence(0.28d);
         int secondAlgoSteps = 350;
@@ -283,10 +293,10 @@ public class App
         }
 
         //CHANGE PARAMETERS AND RUN THIRD PHASE
-        forceAtlasStep.setScalingRatio(1.1d);
+        forceAtlasStep.setScalingRatio(1.6d);
         forceAtlasStep.setLinLogMode(true);
-        forceAtlasStep.setEdgeWeightInfluence(0.4d);
-        int thirdAlgoSteps = 1000;
+        forceAtlasStep.setEdgeWeightInfluence(0.45d);
+        int thirdAlgoSteps = 1100;
         
         System.out.println("THIRD PHASE EXECUTION");
         for (int k = 0; k < thirdAlgoSteps; k++)
@@ -332,7 +342,7 @@ public class App
         return graphModel;
     }
 
-    public static void ExportGraph(Graph graph)
+    public static void ExportGraph(Graph graph, int imageNum)
     {
         // ExportController ec = Lookup.getDefault().lookup(ExportController.class);
         // PNGExporter exporter = (PNGExporter) ec.getExporter("png");
@@ -350,15 +360,31 @@ public class App
         // exporter.setExportVisible(true); //Only exports the visible (filtered) graph
 
         //Set png options
-        exporter.setHeight(5500);
-        exporter.setWidth(5500);
+        exporter.setHeight(4500);
+        exporter.setWidth(4500);
 
         try {
-            ec.exportFile(new File("../Images/GeneratedAtlas.png"), exporter);
+            ec.exportFile(new File("../Images/GeneratedAtlas" + String.valueOf(imageNum) + ".png"), exporter);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         System.out.println("ENDING");
+        return;
+    }   
+
+    public static void ExportGexf(Graph graph, String filename)
+    {
+        // ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+        // JSONExporter exporter = new JSONExporter();
+        // // exporter.setExportVisible(true); //Only exports the visible (filtered) graph
+
+      
+        // try {
+        //     ec.exportFile(new File(filename), exporter);
+        // } catch (IOException ex) {
+        //     ex.printStackTrace();
+        // }
+        // System.out.println("ENDING");
         return;
     }   
 }

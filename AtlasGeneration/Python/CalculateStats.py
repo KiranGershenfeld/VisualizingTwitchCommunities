@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     om = OverlapsManager(start_time="", end_time="", db_url=os.environ.get("DB_URL"))
     
-    stats = om.calc_stats(7)
+    stats = om.calc_stats(9)
     
     print(f"eigenvector_centrality: {stats['eigenvector_centrality'][:5]}")
     print(f"betweeness_centrality: {stats['betweeness_centrality'][:5]}")

@@ -110,7 +110,7 @@ function initSigma(config) {
 		a.draw();
 		configSigmaElements(config);
 	}
-
+    console.log(a)
     if (data.indexOf("gexf")>0 || data.indexOf("xml")>0)
         a.parseGexf(data,dataReady);
     else
