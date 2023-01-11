@@ -1,9 +1,11 @@
 import React from 'react';
+import Sigma from "sigma";
 import Graph from "graphology";
 import { parse } from "graphology-gexf/browser";
 import { UndirectedGraph } from 'graphology';
 import RawGraph from './webdata.gexf'
-import { Sigma, SigmaEnableWebGL, LoadGEXF, RelativeSize} from "react-sigma"
+import { SigmaContainer } from "@react-sigma/core";
+import "@react-sigma/core/lib/react-sigma.min.css";
 
 
 class GraphView extends React.Component {
@@ -16,8 +18,8 @@ class GraphView extends React.Component {
     
     LoadGexfToSigma(RawGraph)
     {
-      const sigmaGraph = new UndirectedGraph();
-      
+        const sigmaGraph = new UndirectedGraph();
+
         // Load external GEXF file:
         fetch(RawGraph)
         .then((res) => res.text())
@@ -42,23 +44,23 @@ class GraphView extends React.Component {
             // console.log(sourceAttrs.color)
             const colorVals = sourceAttrs.color.slice(4, -1)
             
-            // const newCol = `rgba(${colorVals},0.1)`
+            const newCol = `rgba(${colorVals},0.1)`
             if(source == 'speedgaming' || target == 'speedgaming')
             {
-              // console.log(newCol)
+              console.log(newCol)
             }
 
             sigmaGraph.addEdgeWithKey(key, source, target,
             { 
               weight: attrs.weight / 10, 
               size: 0.1,
-              color: "rgba(50,50,50,1)",
+              color: newCol,
               width: 1,
             });
           });
         })
-      return sigmaGraph;
 
+      return sigmaGraph;
     }
 
     componentDidMount() {
@@ -75,7 +77,6 @@ class GraphView extends React.Component {
           maxEdgeSize: 1,
           drawEdges: false,
       }})
-      console.log("Mounting")
 
         // Retrieve some useful DOM elements:
         // const container = document.getElementById("sigma-container") 
@@ -116,17 +117,7 @@ class GraphView extends React.Component {
 
     render() {
       return (
-          <Sigma 
-            id='SigmaCanvas' 
-            style={{ height: "100vh", width: '100vw', backgroundColor: 'black'}} 
-            graph={this.state.graph} 
-            renderer="webgl"
-            settings={{ hideEdgesOnMove: true}} 
-          >
-            <SigmaEnableWebGL />
-            <RelativeSize initialSize={8}/>
-          </Sigma>
+          <SigmaContainer id='SigmaCanvas' style={{ height: "100vh", width: '100vw'}} graph={this.state.graph} renderer='canvas' settings={{ drawEdges: false    }} />
       )
-    }
-}
+    }}
 export default GraphView;
