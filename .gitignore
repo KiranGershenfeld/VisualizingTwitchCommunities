@@ -36,7 +36,7 @@ AtlasGeneration/Python/tmp/*
 DataCollection/**/*.csv
 
 #GEXF
-*.gexf
+# *.gexf
 
 #Pickles
 *.pkl
